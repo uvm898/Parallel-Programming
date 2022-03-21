@@ -132,14 +132,12 @@ public final class ReciprocalArraySum {
 
 		@Override
 		protected void compute() {
-//			if (this.index < (N_TASKS- 1))
-//				array[this.index + 1].fork();
+
 
 			for (int i = startIndexInclusive; i < endIndexExclusive; ++i)
 				value += 1 / input[i];
 
-//			if (this.index < (N_TASKS- 1))
-//				array[this.index + 1].join();
+
 		}
 	}
 
@@ -178,17 +176,9 @@ public final class ReciprocalArraySum {
 		for (int i = 0; i < numTasks; ++i) {
 			array[i] = new ReciprocalArraySumTask(getChunkStartInclusive(i, numTasks, input.length),
 					getChunkEndExclusive(i, numTasks, input.length), input);
-//			array[i].setIndex(i);
+
 		}
 
-//		ForkJoinPool pool = new ForkJoinPool();
-
-//		pool.invoke(array[0]);
-
-//		for (int i = 0; i < numTasks; ++i)
-//			array[i].fork();
-//		for (int i = 0; i < numTasks; ++i)
-//			array[i].join();
 		
 		new ForkJoinPool().invoke(ForkJoinTask.adapt(()->{
 			ForkJoinTask.invokeAll(array);
