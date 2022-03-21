@@ -124,16 +124,11 @@ public final class ReciprocalArraySum {
 			return value;
 		}
 
-		private int index;
-
-		public void setIndex(int index) {
-			this.index = index;
-		}
+		
 
 		@Override
 		protected void compute() {
-//			if (this.index < (N_TASKS- 1))
-//				array[this.index + 1].fork();
+
 			if ((this.endIndexExclusive - this.startIndexInclusive) <= SEQUENTIAL_THRESHOLD)
 				for (int i = startIndexInclusive; i < endIndexExclusive; ++i)
 					value += 1 / input[i];
@@ -151,8 +146,7 @@ public final class ReciprocalArraySum {
 				this.value = left.value + right.value;
 			}
 
-//			if (this.index < (N_TASKS- 1))
-//				array[this.index + 1].join();
+
 		}
 	}
 
@@ -173,7 +167,6 @@ public final class ReciprocalArraySum {
 
 	private static int N_TASKS;
 	private static int SEQUENTIAL_THRESHOLD;
-	// private static ReciprocalArraySumTask array[];
 
 	/**
 	 * TODO: Extend the work you did to implement parArraySum to use a set number of
