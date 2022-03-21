@@ -124,11 +124,7 @@ public final class ReciprocalArraySum {
 			return value;
 		}
 
-		private int index;
 
-		public void setIndex(int index) {
-			this.index = index;
-		}
 
 		@Override
 		protected void compute() {
