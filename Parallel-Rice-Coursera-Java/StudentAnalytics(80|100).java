@@ -98,20 +98,21 @@ public final class StudentAnalytics {
 	 * @return Most common first name of inactive students
 	 */
 	public String mostCommonFirstNameOfInactiveStudentsParallelStream(final Student[] studentArray) {
-		ConcurrentMap<String, Integer> nameCounts = new ConcurrentHashMap<String, Integer>();
-		Stream.of(studentArray).parallel().filter(s -> !s.checkIsCurrent()).forEach(s -> {
+		Map<String, AtomicInteger> nameCounts = new HashMap<String, AtomicInteger>();
+		
+		AtomicInteger mostCommon= new AtomicInteger(0);
+		//AtomicReference<String> mostCommonName = new AtomicReference<String>();
+		Stream.of(studentArray).filter(s -> !s.checkIsCurrent()).forEach(s->{
 			if (nameCounts.containsKey(s.getFirstName())) {
-				nameCounts.put(s.getFirstName(), new Integer(nameCounts.get(s.getFirstName()) + 1));
+				nameCounts.get(s.getFirstName()).incrementAndGet();
 			} else {
-				nameCounts.put(s.getFirstName(), 1);
+				nameCounts.put(s.getFirstName(), new AtomicInteger(1));
 			}
 		});
-
-		int mostCommonCount = nameCounts.entrySet().stream().parallel().mapToInt(entry -> entry.getValue()).max()
-				.getAsInt();
-
-		return nameCounts.entrySet().stream().parallel().filter(entry -> entry.getValue() == mostCommonCount)
-				.findFirst().get().getKey();
+		
+		int mostCommon = nameCounts.entrySet().stream().parallel().mapToInt(s->s.getValue().get()).max().getAsInt();
+		//int mostC= mostCommon.get();
+		return nameCounts.entrySet().stream().parallel().filter(s->s.getValue().get()==mostC).findFirst().get().getKey();
 	}
 
 	/**
