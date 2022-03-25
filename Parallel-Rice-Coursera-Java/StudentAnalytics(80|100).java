@@ -100,18 +100,14 @@ public final class StudentAnalytics {
 	public String mostCommonFirstNameOfInactiveStudentsParallelStream(final Student[] studentArray) {
 		
 		ConcurrentMap<String, Integer> nameCounts = new ConcurrentHashMap<String, Integer>();
-
+		//PARALLEL MAKES PROBLEM!!! Stream.of(studentArray).parallel()... WHY!?!?!?
 		Stream.of(studentArray).filter(s -> !s.checkIsCurrent()).forEach(s -> {
-			if (nameCounts.containsKey(s.getFirstName())) {
-				nameCounts.put(s.getFirstName(), new Integer(nameCounts.get(s.getFirstName()) + 1));
-
-			} else {
-				nameCounts.putIfAbsent(s.getFirstName(), 1);
-			}
+			if(nameCounts.putIfAbsent(s.getFirstName(), 1)!=null)
+				nameCounts.put(s.getFirstName(), nameCounts.get(s.getFirstName())+1);
 		});
 
 		int mostCommon = nameCounts.entrySet().stream().parallel().mapToInt(e -> e.getValue()).max().getAsInt();
-		return nameCounts.entrySet().stream().parallel().filter(e -> e.getValue() == mostCommon).findFirst().get()
+		return nameCounts.entrySet().stream().parallel().filter(e -> e.getValue() == mostCommon).findAny().get()
 				.getKey();
 	}
 
